@@ -16,6 +16,10 @@
 
 #pragma once
 
+#define FORCE_NKRO
+#define COMBO_COUNT 1
+#define COMBO_TERM 200
+
 #ifdef OLED_DRIVER_ENABLE
   #define OLED_DISPLAY_128X64
 #endif
@@ -25,6 +29,7 @@
   #define RGBLIGHT_HUE_STEP 8
   #define RGBLIGHT_SAT_STEP 8
   #define RGBLIGHT_VAL_STEP 8
+  // #define RGBLIGHT_SLEEP yes
 #endif
 
 // If you are using an Elite C rev3 on the slave side, uncomment the lines below:
