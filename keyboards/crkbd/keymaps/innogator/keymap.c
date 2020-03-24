@@ -31,7 +31,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_RSFT,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   LOWER,  KC_ENT,     KC_SPC,   RAISE,  KC_RALT \
+                                          KC_LGUI,   LOWER,  KC_ENT,     KC_SPC,    RAISE,  KC_RALT \
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -91,6 +91,11 @@ void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
   } else {
     layer_off(layer3);
   }
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    state = update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    return state;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

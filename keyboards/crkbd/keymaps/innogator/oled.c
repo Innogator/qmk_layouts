@@ -10,6 +10,9 @@ extern uint8_t is_master;
   extern audio_config_t audio_config;
 #endif
 
+// Referenced in rules.mk
+const char *read_layer_state(void);
+
 // 5x3 Logos
 
 void render_corne_logo(void) {
@@ -58,6 +61,16 @@ void render_layer(void) {
         { 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0 },
     };
     int layer = 0;
+    
+    if (strstr(read_layer_state(), "Layer: Lower") != NULL) {
+        layer = 1;
+    } else if (strstr(read_layer_state(), "Layer: Raise") != NULL) {
+        layer = 2;
+    } else if (strstr(read_layer_state(), "Layer: Adjust") != NULL) {
+        layer = 3;
+    }
+    
+    /*
     if (layer_state_is(_LOWER)) {
         layer = 1;
     } else if (layer_state_is(_RAISE)) {
@@ -65,6 +78,7 @@ void render_layer(void) {
     } else if (layer_state_is(_ADJUST)) {
         layer = 3;
     }
+    */
     oled_write_P(font_layer[layer], false);
 };
 
@@ -160,6 +174,7 @@ void render_feature_status(void) {
 #define KEYLOGGER_LENGTH 5
 static uint32_t oled_timer                       = 0;
 static char     keylog_str[KEYLOGGER_LENGTH + 1] = {"\n"};
+
 // clang-format off
 static const char PROGMEM code_to_name[0xFF] = {
 //   0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
@@ -202,8 +217,19 @@ void render_keylogger_status(void) {
 }
 
 void render_prompt(void) {
-    bool blink = (timer_read32( ) % 1000) < 500;
-
+    bool blink = (timer_read32( ) % 1000) < 500;  
+    
+    // How to fix this monstrocity?
+    if (strstr(read_layer_state(), "Layer: Lower") != NULL) {
+        oled_write_ln_P(blink ? PSTR("> lo_") : PSTR("> lo "), false);
+    } else if (strstr(read_layer_state(), "Layer: Raise") != NULL) {
+        oled_write_ln_P(blink ? PSTR("> hi_") : PSTR("> hi "), false);
+    } else if (strstr(read_layer_state(), "Layer: Adjust") != NULL) {
+        oled_write_ln_P(blink ? PSTR("> aj_") : PSTR("> aj "), false);
+    } else {
+        oled_write_ln_P(blink ? PSTR("> _  ") : PSTR(">    "), false);
+    }
+    /*
     if (layer_state_is(_LOWER)) {
         oled_write_ln_P(blink ? PSTR("> lo_") : PSTR("> lo "), false);
     } else if (layer_state_is(_RAISE)) {
@@ -213,6 +239,7 @@ void render_prompt(void) {
     } else {
         oled_write_ln_P(blink ? PSTR("> _  ") : PSTR(">    "), false);
     }
+    */
 };
 
 void render_status_main(void) {
