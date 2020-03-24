@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define COMBO_COUNT 1
 //#define COMBO_TERM 200
 
+#define OLED_FONT_H "keyboards/crkbd/keymaps/innogator/glcdfont.c"
+
 #define MASTER_LEFT
 // #define MASTER_RIGHT
 // #define EE_HANDS
