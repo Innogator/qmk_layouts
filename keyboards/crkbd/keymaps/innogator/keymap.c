@@ -76,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX,  KC_1,   KC_2,    KC_3,    KC_PAST, KC_PMNS,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,   LOWER,  KC_ENT,     KC_SPC,   RAISE,  KC_0  \
+                                          KC_LGUI,   LOWER,  KC_ENT,     KC_SPC,   KC_0,  KC_RALT \
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -96,7 +96,7 @@ void persistent_default_layer_set(uint16_t default_layer) {
 void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
   if (IS_LAYER_ON(layer1) && IS_LAYER_ON(layer2)) {
     layer_on(layer3);
-  } else {
+  } else { 
     layer_off(layer3);
   }
 }

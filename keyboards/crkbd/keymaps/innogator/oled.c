@@ -219,6 +219,33 @@ void render_keylogger_status(void) {
 void render_prompt(void) {
     bool blink = (timer_read32( ) % 1000) < 500;  
     
+    #define _QWERTY 0
+#define _LOWER 1
+#define _RAISE 2
+#define _ADJUST 3
+#define _NUMPAD 4
+        
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            oled_write_ln_P(blink ? PSTR("> _  ") : PSTR(">    "), false);
+            break;
+        case _LOWER:
+            oled_write_ln_P(blink ? PSTR("> lo_") : PSTR("> lo "), false);
+            break;
+        case _RAISE:
+            oled_write_ln_P(blink ? PSTR("> hi_") : PSTR("> hi "), false);
+            break;
+        case _ADJUST:
+            oled_write_ln_P(blink ? PSTR("> aj_") : PSTR("> aj "), false);
+            break;
+        case _NUMPAD:
+            oled_write_ln_P(blink ? PSTR("> no_") : PSTR("> no "), false);
+            break;
+        default:
+            oled_write_P(PSTR("Undefined\n"), false);
+    }
+    
+    /*
     // How to fix this monstrocity?
     if (strstr(read_layer_state(), "Layer: Lower") != NULL) {
         oled_write_ln_P(blink ? PSTR("> lo_") : PSTR("> lo "), false);
@@ -226,9 +253,12 @@ void render_prompt(void) {
         oled_write_ln_P(blink ? PSTR("> hi_") : PSTR("> hi "), false);
     } else if (strstr(read_layer_state(), "Layer: Adjust") != NULL) {
         oled_write_ln_P(blink ? PSTR("> aj_") : PSTR("> aj "), false);
+    } else if (strstr(read_layer_state(), "Layer: Numpad") != NULL) {
+        oled_write_ln_P(blink ? PSTR("> np_") : PSTR("> np "), false);
     } else {
         oled_write_ln_P(blink ? PSTR("> _  ") : PSTR(">    "), false);
     }
+    */
     /*
     if (layer_state_is(_LOWER)) {
         oled_write_ln_P(blink ? PSTR("> lo_") : PSTR("> lo "), false);
