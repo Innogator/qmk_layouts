@@ -8,12 +8,14 @@
 #define _LOWER 1
 #define _RAISE 2
 #define _ADJUST 3
+#define _NUMPAD 4
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   LOWER,
   RAISE,
   ADJUST,
+  NUMPAD,
   RGBRST
 };
 

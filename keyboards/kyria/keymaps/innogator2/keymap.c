@@ -17,41 +17,26 @@
 
 enum layers {
     _QWERTY = 0,
-    _NAVIGATION,
-    _SYMBOL,
-    _FUNCTION,
-    _NUMBER
+    _LOWER,
+    _RAISE,
+    _ADJUST
 };
-
-enum custom_keycodes {
-    SWITCH_PROGRAMS = 0,
-    TASK_VIEW
-};  
-
-enum combos {
-  JK_ESC
-};
-
-const uint16_t PROGMEM jk_combo[] = { KC_J,KC_K, COMBO_END };
-uint8_t prev = _QWERTY;
-uint32_t desired = 1;
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* 
  * Base Layer: QWERTY
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Tab   |   Q  |   W  |  E   |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bksp  |
+ * |RAIS/ESC|   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  | \   |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |  Ctrl  |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
+ * |Ctrl/BS |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  |      |      |  |      |      |   N  |   M  | ,  < | . >  | /  ? |  - _   |
+ * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|LShift|  |LShift|LShift|   N  |   M  | ,  < | . >  | /  ? |  - _   |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        | Brws  | Win  |Lower| Enter| Del  |  | Bksp | Space| Raise| RAlt | Brws |
- *                        | prev  |      |     | Lower| Raise|  | Lower| Raise|      |      | Next |
+ *                        | GUI  | Del  | Enter| Space| Esc  |  | Enter| Space| Tab  | Bksp | AltGr|
+ *                        |      |      | Alt  | Lower| Raise|  | Lower| Raise|      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-
     [_QWERTY] = LAYOUT(
       KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                                                KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
       KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                                                KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
@@ -59,91 +44,65 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  KC_WBAK, KC_LGUI, MO(1),   KC_ENT,   LT(4, KC_DEL),  KC_BSPC, KC_SPC,  MO(2),   KC_RALT, KC_WFWD
     ),
 /*
- * Lower Layer: Navigation
+ * Lower Layer: Symbols
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Esc   |   1  |  2   |  3   |  4   |  5   |                              |  6   |  7   |  8   |  9   |  0   |        |
+ * |        |  !   |  @   |  {   |  }   |  |   |                              |      |      |      |      |      |  | \   |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |  Del |      |      |                              | Left | Down | Up   | Right| Home |  End   |
+ * |        |  #   |  $   |  (   |  )   |  `   |                              |   +  |  -   |  /   |  *   |  %   |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |      |  |      |      |      |      |      |      |PageU | PageD  |
+ * |        |  %   |  ^   |  [   |  ]   |  ~   |      |      |  |      |      |   &  |  =   |  ,   |  .   |  / ? | - _    |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      |      |      |      |  |      |      | MO(3)|      |      |
+ *                        |      |      |      |  ;   |  =   |  |  =   |  ;   |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_NAVIGATION] = LAYOUT(
+    [_LOWER] = LAYOUT(
       KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
       _______, _______, _______, KC_DEL,  _______, _______,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_HOME, KC_END,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_PGUP, KC_PGDN,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
-
 /*
- * Raise Layer: Symbols
+ * Raise Layer: Number keys, media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Esc   |   !  |  @   |  #   |  $   |  %   |                              |  ^   |  &   |  *   |  (   |  )   |        |
+ * |        |   1  |  2   |  3   |  4   |  5   |                              |  6   |  7   |  8   |  9   |  0   |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |                              |  -   |  =   |  {   |  }   |  |   |   `    |
+ * |        |      | Prev | Play | Next | VolUp|                              | Left | Down | Up   | Right|      |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |      |  |      |      |  _   |  +   |  [   |  ]   |  \   |   ~    |
+ * |        |      |      |      | Mute | VolDn|      |      |  |      |      | MLeft| Mdown| MUp  |MRight|      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      | MO(3)|      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_SYMBOL] = LAYOUT(
+    [_RAISE] = LAYOUT(
       KC_ESC, KC_EXLM, 	KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                                     KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
       _______, _______, _______, _______, _______, _______,                                     KC_MINS, KC_EQL,  KC_LCBR, KC_RCBR, KC_BSLS, KC_GRV,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_UNDS, KC_PLUS, KC_LBRC, KC_RBRC, KC_PIPE, KC_TILD,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
-
 /*
- * Adjust Layer: Function keys, RGB, Media
+ * Adjust Layer: Function keys, RGB
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Reset | F1   |  F2  | F3   | F4   | F5   |                              | F6   | F7   |  F8  | F9   | F10  |   INS  |
+ * |        | F1   |  F2  | F3   | F4   | F5   |                              | F6   | F7   |  F8  | F9   | F10  |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        | TOG  | SAI  | HUI  | VAI  | MOD  |                              | Mute | VolU | Prev | Play | F11  |   F12  |
+ * |        | TOG  | SAI  | HUI  | VAI  | MOD  |                              |      |      |      | F11  | F12  |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      | SAD  | HUD  | VAD  | RMOD |      |      |  |      |      |      | VolD | Next | Stop |CmbTog|        |
+ * |        |      | SAD  | HUD  | VAD  | RMOD |      |      |  |      |      |      |      |      |      |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
- 
-    [_FUNCTION] = LAYOUT(
+    [_ADJUST] = LAYOUT(
       RESET,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                       KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_INS,
       _______, RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI, RGB_MOD,                                     KC_MUTE, KC_VOLU, KC_MPRV, KC_MPLY, KC_F11,  KC_F12,
       _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD,_______, _______, _______, _______, _______, KC_VOLD, KC_MNXT, KC_STOP, CMB_TOG, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
-    ),   
- 
- /*
- * Numbers Layer: Numpad
- *
- * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Esc   |   1  |  2   |  3   |  4   |  5   |                              |  6   |  7   |  8   |  9   |  0   |  BSPC  |
- * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      |      |      |      |      |                              |      |  4   |  5   |  6   |  /   |    +   |
- * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      |      |      |      |      |  |      |      |      |  5   |  2  |   3   |  *   |    -   |
- * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      |      |      |      |      |  |      |      |  0   |      |      |
- *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        `----------------------------------'  `----------------------------------'
- */
-
-    [_NUMBER] = LAYOUT(
-      KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-      _______, _______, _______, _______, _______, _______,                                     _______, KC_4,    KC_5,    KC_6,    KC_PSLS, KC_PPLS,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2,    KC_3,    KC_PAST, KC_PMNS,
-                                 _______, _______, _______, _______, _______, _______, _______, KC_0,    _______, _______
-    ),
-    
+    ),  
 // /*
 //  * Layer template
 //  *
@@ -167,81 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    //state = update_tri_layer_state(state, _NAVIGATION, _SYMBOL, _NUMBER);
-    state = update_tri_layer_state(state, _NAVIGATION, _SYMBOL, _FUNCTION);
-
-    uint8_t layer = biton32(state);
-    if (prev != _FUNCTION) {
-        switch (layer) {
-            case _QWERTY:
-                //rgblight_mode(desired);
-                //rgblight_setrgb(RGB_TURQUOISE); 
-                //rgblight_sethsv_noeeprom(125, 150, 255); 
-                rgblight_sethsv_noeeprom(HSV_RED); // Do this first because slave side LEDs don't like to liste
-                rgblight_sethsv_range(125, 150, 255, 0, 10);  
-                rgblight_sethsv_range(HSV_RED, 10, 20);
-                break;
-            case _NAVIGATION:
-                //rgblight_mode(23);        
-                //rgblight_setrgb(RGB_BLUE);                        
-                rgblight_sethsv_noeeprom(HSV_BLUE);
-                break;
-            case _SYMBOL:
-                //rgblight_mode(5);
-                //rgblight_setrgb(RGB_YELLOW);           
-                rgblight_sethsv_noeeprom(HSV_ORANGE);
-                break;
-            case _NUMBER:
-                //rgblight_mode(12);
-                //rgblight_setrgb(RGB_PURPLE);           
-                rgblight_sethsv_noeeprom(HSV_PURPLE);
-                break;
-            case _FUNCTION:
-                //rgblight_mode(desired);                
-                //rgblight_setrgb(RGB_RED);           
-                rgblight_sethsv_noeeprom(HSV_RED);
-                break;
-        }
-    } else {
-        desired = rgblight_get_mode();
-    }
-    prev = layer;
-    return state;
-}
-
-// Macro Definitions
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch(keycode) {
-        case SWITCH_PROGRAMS: {
-            if (record->event.pressed) {
-                register_code(KC_RALT);
-                register_code(KC_TAB);
-            }
-            break;
-        }
-        case TASK_VIEW: {
-            if (record->event.pressed) {
-                register_code(KC_LGUI);
-                register_code(KC_TAB);
-            }
-            break;
-        }
-  }
-  return true;
-};
-
-combo_t key_combos[COMBO_COUNT] = {
-  [JK_ESC] = COMBO(jk_combo, KC_ESC)
-};
-
-void matrix_init_user() {
-    rgblight_mode(desired);
-    //rgblight_sethsv(125, 150, 255);
-    //rgblight_setrgb(RGB_TURQUOISE); 
-    rgblight_sethsv_range(125, 150, 255, 0, 9);
-    rgblight_sethsv_range(HSV_RED, 10, 20);
-    //rgblight_setrgb_master(RGB_TURQUOISE);
-    //rgblight_setrgb_slave(RGB_CORAL);
+    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
 #ifdef OLED_DRIVER_ENABLE
@@ -283,17 +168,14 @@ static void render_status(void) {
         case _QWERTY:
             oled_write_P(PSTR("Default\n"), false);
             break;
-        case _NAVIGATION:
-            oled_write_P(PSTR("Navigation\n"), false);
+        case _LOWER:
+            oled_write_P(PSTR("Lower\n"), false);
             break;
-        case _SYMBOL:
-            oled_write_P(PSTR("Symbol\n"), false);
+        case _RAISE:
+            oled_write_P(PSTR("Raise\n"), false);
             break;
-        case _FUNCTION:
-            oled_write_P(PSTR("Function\n"), false);
-            break;        
-        case _NUMBER:
-            oled_write_P(PSTR("Number\n"), false);
+        case _ADJUST:
+            oled_write_P(PSTR("Adjust\n"), false);
             break;
         default:
             oled_write_P(PSTR("Undefined\n"), false);
@@ -335,47 +217,3 @@ void encoder_update_user(uint8_t index, bool clockwise) {
     }
 }
 #endif
-
-/***** rgblight_mode(mode)/rgblight_mode_noeeprom(mode) ****
- old mode number (before 0.6.117) to new mode name table
-|-----------------|-----------------------------------|
-| old mode number | new mode name                     |
-|-----------------|-----------------------------------|
-|        1        | RGBLIGHT_MODE_STATIC_LIGHT        |
-|        2        | RGBLIGHT_MODE_BREATHING           |
-|        3        | RGBLIGHT_MODE_BREATHING + 1       |
-|        4        | RGBLIGHT_MODE_BREATHING + 2       |
-|        5        | RGBLIGHT_MODE_BREATHING + 3       |
-|        6        | RGBLIGHT_MODE_RAINBOW_MOOD        |
-|        7        | RGBLIGHT_MODE_RAINBOW_MOOD + 1    |
-|        8        | RGBLIGHT_MODE_RAINBOW_MOOD + 2    |
-|        9        | RGBLIGHT_MODE_RAINBOW_SWIRL       |
-|       10        | RGBLIGHT_MODE_RAINBOW_SWIRL + 1   |
-|       11        | RGBLIGHT_MODE_RAINBOW_SWIRL + 2   |
-|       12        | RGBLIGHT_MODE_RAINBOW_SWIRL + 3   |
-|       13        | RGBLIGHT_MODE_RAINBOW_SWIRL + 4   |
-|       14        | RGBLIGHT_MODE_RAINBOW_SWIRL + 5   |
-|       15        | RGBLIGHT_MODE_SNAKE               |
-|       16        | RGBLIGHT_MODE_SNAKE + 1           |
-|       17        | RGBLIGHT_MODE_SNAKE + 2           |
-|       18        | RGBLIGHT_MODE_SNAKE + 3           |
-|       19        | RGBLIGHT_MODE_SNAKE + 4           |
-|       20        | RGBLIGHT_MODE_SNAKE + 5           |
-|       21        | RGBLIGHT_MODE_KNIGHT              |
-|       22        | RGBLIGHT_MODE_KNIGHT + 1          |
-|       23        | RGBLIGHT_MODE_KNIGHT + 2          |
-|       24        | RGBLIGHT_MODE_CHRISTMAS           |
-|       25        | RGBLIGHT_MODE_STATIC_GRADIENT     |
-|       26        | RGBLIGHT_MODE_STATIC_GRADIENT + 1 |
-|       27        | RGBLIGHT_MODE_STATIC_GRADIENT + 2 |
-|       28        | RGBLIGHT_MODE_STATIC_GRADIENT + 3 |
-|       29        | RGBLIGHT_MODE_STATIC_GRADIENT + 4 |
-|       30        | RGBLIGHT_MODE_STATIC_GRADIENT + 5 |
-|       31        | RGBLIGHT_MODE_STATIC_GRADIENT + 6 |
-|       32        | RGBLIGHT_MODE_STATIC_GRADIENT + 7 |
-|       33        | RGBLIGHT_MODE_STATIC_GRADIENT + 8 |
-|       34        | RGBLIGHT_MODE_STATIC_GRADIENT + 9 |
-|       35        | RGBLIGHT_MODE_RGB_TEST            |
-|       36        | RGBLIGHT_MODE_ALTERNATING         |
-|-----------------|-----------------------------------|
- *****/

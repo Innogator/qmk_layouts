@@ -30,7 +30,6 @@
   #define RGBLIGHT_SAT_STEP 8
   #define RGBLIGHT_VAL_STEP 8
   #define RGBLIGHT_SLEEP yes
-  #define RGB_DISABLE_WHEN_USB_SUSPENDED true
 #endif
 
 // If you are using an Elite C rev3 on the slave side, uncomment the lines below:
